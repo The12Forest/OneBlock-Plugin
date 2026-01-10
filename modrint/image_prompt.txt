@@ -1,0 +1,24 @@
+Here is a detailed prompt you can use with an AI image generator like ChatGPT (with DALL-E) to create a 500x500 picture for your "OneBlock" plugin:
+
+---
+
+### Detailed AI Image Generation Prompt
+
+**Subject:** A vibrant, high-quality icon for a Minecraft plugin called "OneBlock".
+
+**Style:** Must be the classic Minecraft blocky, pixel-art aesthetic. Bright, saturated colors.
+
+**Composition (500x500 pixels):**
+The image should be a close-up of a single, magical block floating in the center of a beautiful Minecraft sky with fluffy, white, blocky clouds. The block should be the undeniable hero of the image.
+
+**The "OneBlock" Details:**
+This isn't just a static block. It should be captured in a moment of transformation to represent the core idea of the plugin. Visualize a standard Minecraft **grass block** that is partially breaking or dematerializing. As it breaks, it reveals other, more valuable blocks beneath its surface in layers. For example, you can see a layer of **stone**, then a layer of **iron ore**, and peeking from the very center, a hint of shimmering **diamond ore**.
+
+**Effects:**
+To emphasize its magical nature, have subtle, glowing particles or a soft, radiant aura swirling around the block. These particles could be blue and gold to hint at magic and rewards. The block itself should look like it's being "regenerated" or "re-rolled" rather than destroyed.
+
+**Mood and Lighting:**
+The mood should be one of wonder, adventure, and endless possibility. The lighting should be bright and optimistic, like a sunny day in Minecraft, with the sun's rays catching the edges of the block and making the ores inside glint.
+
+**Summary for the AI:**
+"Create a 500x500 Minecraft-style icon. A single grass block is floating in the sky, cracking open to reveal layers of stone, iron ore, and a glowing diamond inside. Swirling magical particles surround it. The mood is adventurous and bright."
