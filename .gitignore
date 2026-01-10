@@ -101,6 +101,7 @@ $RECYCLE.BIN/
 *.lnk
 
 .gradle
+gradle
 build/
 
 # Ignore Gradle GUI config
@@ -119,8 +120,5 @@ runs/
 !gradle-wrapper.jar
 
 
-.gradle/
-.idea/
-.build/
-gradle/
-run
+
+
