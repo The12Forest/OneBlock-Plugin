@@ -35,7 +35,7 @@ public final class  OneBlock extends JavaPlugin {
         Commands commands = new Commands(this, dataBase);
         commands.onEnable();
 
-        getServer().getPluginManager().registerEvents(new MyListener(dataBase, config), this);
+        getServer().getPluginManager().registerEvents(new MyListener(dataBase, config, this), this);
         getLogger().info("OneBlock Plugin has been enabled");
     }
 
