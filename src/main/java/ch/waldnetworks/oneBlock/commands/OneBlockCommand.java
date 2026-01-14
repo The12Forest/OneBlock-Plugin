@@ -2,11 +2,8 @@ package ch.waldnetworks.oneBlock.commands;
 
 import ch.waldnetworks.oneBlock.database.DataBase;
 import ch.waldnetworks.oneBlock.database.additional_function.OneBlockData;
-import io.papermc.paper.math.BlockPosition;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;

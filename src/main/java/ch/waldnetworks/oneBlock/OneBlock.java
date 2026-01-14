@@ -8,14 +8,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 public final class  OneBlock extends JavaPlugin {
     private HikariDataSource dataSource;
     private File file = new File(getDataFolder(), "config.yml");
     private FileConfiguration config = null;
-
 
     @Override
     public void onEnable() {
@@ -30,28 +28,17 @@ public final class  OneBlock extends JavaPlugin {
         //saveSettings();
 
         DataBase dataBase = new DataBase(this);
-        dataBase.initDataBase();
 
         Commands commands = new Commands(this, dataBase);
         commands.onEnable();
 
-        getServer().getPluginManager().registerEvents(new MyListener(dataBase, config), this);
+        getServer().getPluginManager().registerEvents(new MyListener(dataBase, config, this), this);
         getLogger().info("OneBlock Plugin has been enabled");
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        //dataBase.shutdown();
     }
-
-    private void saveSettings() {
-        try {
-            config.save(file);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-
 }

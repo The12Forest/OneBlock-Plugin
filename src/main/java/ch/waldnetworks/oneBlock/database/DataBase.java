@@ -2,7 +2,6 @@ package ch.waldnetworks.oneBlock.database;
 
 import ch.waldnetworks.oneBlock.database.additional_function.OneBlockData;
 import com.zaxxer.hikari.HikariDataSource;
-import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,34 +16,36 @@ import java.util.List;
 public class DataBase {
     private final JavaPlugin plugin;
     private HikariDataSource dataSource;
-
+    private Connection db;
 
     public DataBase(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
-
-
-    public void initDataBase() {
-        plugin.getDataFolder().mkdirs();
         this.dataSource = new HikariDataSource();
         this.dataSource.setJdbcUrl("jdbc:sqlite:" + new File(plugin.getDataFolder(), "data.db"));
+        this.plugin = plugin;
+
 
         try {
-            Connection connection = getConnection();
+            this.db = this.dataSource.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        plugin.getDataFolder().mkdirs();
+
+        try {
 
             final String sqlDataBaseInit = "CREATE TABLE IF NOT EXISTS OneBlocks (ID INTEGER PRIMARY KEY AUTOINCREMENT,world VARCHAR(10) NOT NULL, x INTEGER NOT NULL,  y INTEGER NOT NULL, z INTEGER NOT NULL, level INTEGER DEFAULT 1, progress INTEGER DEFAULT 0);)";
-            final PreparedStatement statement = connection.prepareStatement(sqlDataBaseInit);
+            final PreparedStatement statement = db.prepareStatement(sqlDataBaseInit);
             statement.executeUpdate();
 
-            connection.close();
         } catch (SQLException e) {
             plugin.getLogger().severe(e.getMessage());
         }
+    }
 
+    public void shutdown() {
+        this.dataSource.close();
     }
-    public Connection getConnection() throws SQLException {
-        return this.dataSource.getConnection();
-    }
+
 
     public void addOneBlockToDB(Block block) {
         int x = block.getLocation().getBlockX();
@@ -52,7 +53,7 @@ public class DataBase {
         int z = block.getLocation().getBlockZ();
 
         try {
-            Connection db = getConnection();
+
 
             final String sqlDataBaseInit = "INSERT INTO OneBlocks (world, x, y, z) VALUES (?, ?, ?, ?);)";
             final PreparedStatement statement = db.prepareStatement(sqlDataBaseInit);
@@ -62,7 +63,6 @@ public class DataBase {
             statement.setInt(4, z);
             statement.executeUpdate();
 
-            db.close();
         } catch (SQLException e) {
             plugin.getLogger().severe(e.getMessage());
         }
@@ -75,7 +75,7 @@ public class DataBase {
         int z = block.getLocation().getBlockZ();
 
         try {
-            Connection db = getConnection();
+
 
             final String sqlDataBaseInit = "DELETE FROM OneBlocks where world = ? and x = ? and y = ? and z = ?;)";
             final PreparedStatement statement = db.prepareStatement(sqlDataBaseInit);
@@ -85,7 +85,7 @@ public class DataBase {
             statement.setInt(4, z);
             statement.executeUpdate();
 
-            db.close();
+
         } catch (SQLException e) {
             plugin.getLogger().severe(e.getMessage());
         }
@@ -93,14 +93,14 @@ public class DataBase {
 
     public void delOneBlockByIDFromDB(int ID) {
         try {
-            Connection db = getConnection();
+
 
             final String sqlDataBaseInit = "DELETE FROM OneBlocks where ID = ?;)";
             final PreparedStatement statement = db.prepareStatement(sqlDataBaseInit);
             statement.setInt(1, ID);
             statement.executeUpdate();
 
-            db.close();
+
         } catch (SQLException e) {
             plugin.getLogger().severe(e.getMessage());
         }
@@ -108,7 +108,7 @@ public class DataBase {
 
     public void delAllOneBlockFromDB() {
         try {
-            Connection db = getConnection();
+
 
             String sqlDataBaseInit = "DROP TABLE OneBlocks;";
             PreparedStatement statement = db.prepareStatement(sqlDataBaseInit);
@@ -118,7 +118,7 @@ public class DataBase {
             statement = db.prepareStatement(sqlDataBaseInit);
             statement.executeUpdate();
 
-            db.close();
+
         } catch (SQLException e) {
             plugin.getLogger().severe(e.getMessage());
         }
@@ -132,8 +132,11 @@ public class DataBase {
         final String sql =
                 "SELECT 1 FROM OneBlocks WHERE world = ? AND x = ? AND y = ? AND z = ? LIMIT 1";
 
-        try (Connection db = getConnection();
-             PreparedStatement stmt = db.prepareStatement(sql)) {
+
+        PreparedStatement stmt = null;
+        try {
+            stmt = db.prepareStatement(sql);
+
 
             stmt.setString(1, block.getWorld().getName());
             stmt.setInt(2, x);
@@ -154,8 +157,8 @@ public class DataBase {
         List<OneBlockData> blocks = new ArrayList<>();
         final String sql = "SELECT * FROM OneBlocks";
 
-        try (Connection db = getConnection();
-             PreparedStatement stmt = db.prepareStatement(sql);
+        try (PreparedStatement stmt = db.prepareStatement(sql);
+
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -184,8 +187,8 @@ public class DataBase {
         int z = block.getLocation().getBlockZ();
 
         final String sql = "SELECT * FROM OneBlocks Where world = ? AND x = ? AND y = ? AND z = ? LIMIT 1";
-        try (Connection db = getConnection()) {
-             PreparedStatement stmt = db.prepareStatement(sql);
+        try (PreparedStatement stmt = db.prepareStatement(sql)) {
+
 
              stmt.setString(1, world);
              stmt.setInt(2, x);
@@ -214,8 +217,7 @@ public class DataBase {
     public void setBlockProgress(OneBlockData oneBlockData, int progress) {
         int ID = oneBlockData.getID();
         final String sql = "UPDATE OneBlocks SET progress = ? WHERE ID = ?;";
-        try (Connection db = getConnection();
-             PreparedStatement stmt = db.prepareStatement(sql)) {
+        try (PreparedStatement stmt = db.prepareStatement(sql)) {
 
             stmt.setInt(1, progress);
             stmt.setInt(2, ID);
@@ -229,8 +231,7 @@ public class DataBase {
     public void setBlockLevel(OneBlockData oneBlockData, int level) {
         int ID = oneBlockData.getID();
         final String sql = "UPDATE OneBlocks SET level = ? WHERE ID = ?;";
-        try (Connection db = getConnection();
-             PreparedStatement stmt = db.prepareStatement(sql)) {
+        try (PreparedStatement stmt = db.prepareStatement(sql)) {
 
             stmt.setInt(1, level);
             stmt.setInt(2, ID);
