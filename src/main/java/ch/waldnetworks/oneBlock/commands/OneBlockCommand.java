@@ -2,11 +2,8 @@ package ch.waldnetworks.oneBlock.commands;
 
 import ch.waldnetworks.oneBlock.database.DataBase;
 import ch.waldnetworks.oneBlock.database.additional_function.OneBlockData;
-import io.papermc.paper.math.BlockPosition;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -42,7 +39,7 @@ public class OneBlockCommand implements TabExecutor {
             return true;
         }
 
-        if (args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("add")) {
+        if (args[0].equalsIgnoreCase("set")) {
             if (args.length != 4) {
                 player.sendMessage("Correct use: /" + command + "<x> <y> <z>");
                 player.sendMessage("PS: Coordinates are absolute-coordinates");
@@ -77,25 +74,15 @@ public class OneBlockCommand implements TabExecutor {
             List<OneBlockData> blocks = dataBase.listOneBlocks();
             if  (blocks.isEmpty()) {player.sendMessage("No Blocks found!"); return true;}
 
+            String header = String.format("%-3s | %-11s | %3s %3s %3s", "ID", "World", "X", "Y", "Z").toUpperCase();
+            String header2 = "=========================";
+            player.sendMessage(header);
+            player.sendMessage(header2);
 
-            String headerFormat = "%-3s | %-12s | %5s %5s %5s | %5s %8s";
-            String rowFormat = "%-3s | %-12s | %5s %5s %5s | %5s %8s";
-            String header = String.format( headerFormat, "ID", "WORLD", "X", "Y", "Z", "LEVEL", "PROGRESS" );
-            String separator = "=========================================="; player.sendMessage(header);
-            player.sendMessage(separator);
             for (OneBlockData b : blocks) {
-                player.sendMessage(String.format(
-                        rowFormat,
-                        String.valueOf(b.getID()),
-                        b.getWorld(),
-                        String.valueOf(b.getX()),
-                        String.valueOf(b.getY()),
-                        String.valueOf(b.getZ()),
-                        String.valueOf(b.getLevel()),
-                        String.valueOf(b.getProgress())
-                ));
+                player.sendMessage(String.format("%-3s | %-12s | %3d %3d %3d",
+                        b.getID(), b.getWorld(), b.getX(), b.getY(), b.getZ()));
             }
-
 
         } else {
             player.sendMessage(Component.text("Invalid argument!", TextColor.color(0xFF0000)));
@@ -110,7 +97,7 @@ public class OneBlockCommand implements TabExecutor {
 
         if (args.length == 1) {
             StringUtil.copyPartialMatches(args[0], List.of("set", "delete", "list", "deleteByID", "deleteAllOnebLocks"), completions);
-        } else if (args.length >= 2 && (args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("delete") || args[0].equalsIgnoreCase("remove"))) {
+        } else if (args.length >= 2 && (args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("delete"))) {
             Block block = this.getTargetBlock(player);
             if (block != null) {
                 if (args.length == 2) {
@@ -137,11 +124,5 @@ public class OneBlockCommand implements TabExecutor {
 
         // use the coordinates
         return result.getHitBlock();
-    }
-
-    private String formatCell(String value, int width) {
-        // linksbündig: value + Leerzeichen
-        value = value.replace(" ", "");
-        return String.format("%-" + width + "s", value);
     }
 }

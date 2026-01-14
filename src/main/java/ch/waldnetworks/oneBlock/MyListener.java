@@ -6,16 +6,11 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Boss;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
@@ -25,11 +20,15 @@ public class MyListener implements Listener {
     private final DataBase dataBase;
     private final FileConfiguration config;
     private final JavaPlugin plugin;
+    private final int Max_Level;
+    private final Random random;
 
     public MyListener(DataBase dataBase, FileConfiguration config, JavaPlugin plugin) {
         this.dataBase = dataBase;
         this.config = config;
         this.plugin = plugin;
+        this.Max_Level = config.getInt("Max_Level");
+        this.random = new Random();
     }
 
 
@@ -40,12 +39,10 @@ public class MyListener implements Listener {
         //event.setCancelled(true);
 
         OneBlockData oneBlockData = dataBase.getOneBlock(block);
-        int Max_Level = config.getInt("Max_Level");
         int progress = oneBlockData.getProgress();
         int Out_Level = oneBlockData.getLevel();
-        int Actual_Level = (Out_Level > Max_Level ? 0 : Out_Level);
+        int Actual_Level = (Out_Level > this.Max_Level ? 0 : Out_Level);
         int level_size = config.getInt(Actual_Level + ".level-size");
-
 
         event.getPlayer().sendActionBar(Component.text("Level: " + Out_Level + " Progress: " + progress + "/" + level_size));
 
@@ -57,9 +54,9 @@ public class MyListener implements Listener {
         }
 
         Bukkit.getScheduler().runTask(plugin, () -> {
-            Random random = new Random();
+
             List<String> blocks = config.getStringList(Actual_Level + ".blocks");
-            String block_name = blocks.get(random.nextInt(blocks.size()));
+            String block_name = blocks.get(this.random.nextInt(blocks.size()));
             Material material = Material.matchMaterial(block_name);
             if (material == null) {
                 Bukkit.getLogger().severe("Invalid block name in Level: " + Actual_Level + ". Block: " + block_name + " cannot be found!");
