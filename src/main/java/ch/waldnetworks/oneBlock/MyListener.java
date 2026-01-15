@@ -22,6 +22,7 @@ public class MyListener implements Listener {
     private final JavaPlugin plugin;
     private final int Max_Level;
     private final Random random;
+    private final boolean repeatAfterFinish;
 
     public MyListener(DataBase dataBase, FileConfiguration config, JavaPlugin plugin) {
         this.dataBase = dataBase;
@@ -29,6 +30,7 @@ public class MyListener implements Listener {
         this.plugin = plugin;
         this.Max_Level = config.getInt("Max_Level");
         this.random = new Random();
+        this.repeatAfterFinish = config.getBoolean("ThenComesInfinity");
     }
 
 
@@ -41,10 +43,12 @@ public class MyListener implements Listener {
         OneBlockData oneBlockData = dataBase.getOneBlock(block);
         int progress = oneBlockData.getProgress();
         int Out_Level = oneBlockData.getLevel();
-        int Actual_Level = (Out_Level > this.Max_Level ? 0 : Out_Level);
+        int Actual_Level = calculateActualLevel(Out_Level);
+
         int level_size = config.getInt(Actual_Level + ".level-size");
 
-        event.getPlayer().sendActionBar(Component.text("Level: " + Out_Level + " Progress: " + progress + "/" + level_size));
+        //event.getPlayer().sendActionBar(Component.text("Level: " + Out_Level + " Progress: " + progress + "/" + level_size));
+        event.getPlayer().sendActionBar(Component.text("Level: " + Actual_Level + " Progress: " + progress + "/" + level_size));
 
         if (level_size <= progress) {
             dataBase.setBlockLevel(oneBlockData, Out_Level + 1);
@@ -66,6 +70,15 @@ public class MyListener implements Listener {
             block.setType(material, false);
         });
     }
+
+    private int calculateActualLevel(int outLevel) {
+        if (repeatAfterFinish) {
+            return ((outLevel - 1) % Max_Level) + 1;
+        } else {
+            return (outLevel > Max_Level) ? 0 : outLevel;
+        }
+    }
+
 
     @EventHandler
     public void onBlockExplode(BlockExplodeEvent event) {

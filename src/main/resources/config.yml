@@ -3,7 +3,15 @@
 #################################
 
 
-Max_Level: 28 # Just provide the Maximum level.
+#Oance you finished the Last Level in the Config
+#If Set to true the server will use for all the following levels the level '0'
+#If set to false the server will Start again at level '1' and go up to the MaxLevel
+#and repeat for infinity while the levelnumber you see goes up and up.
+# Allowed Inputs are true | false
+ThenComesInfinity: true
+# Just provide the Maximum level.
+# Wenn you mess with the config set this to the last Levelnumber you defined.
+Max_Level: 28
 
 '1':
   level-name: "Level: 1 - Podzol & melon"
@@ -461,7 +469,6 @@ Max_Level: 28 # Just provide the Maximum level.
     - CRIMSON_NYLIUM
     - WARPED_NYLIUM
     - AMETHYST_BLOCK
-    - DIAMOND_BLOCK
     - CRIMSON_STEM
     - WARPED_STEM
     - OXIDIZED_COPPER
@@ -486,7 +493,6 @@ Max_Level: 28 # Just provide the Maximum level.
     - BLACKSTONE
     - DEEPSLATE_BRICKS
     - CRACKED_DEEPSLATE_BRICKS
-    - NETHERITE_BLOCK
     - ANCIENT_DEBRIS
     - POLISHED_BLACKSTONE
     - END_STONE
